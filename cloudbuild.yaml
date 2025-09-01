@@ -38,3 +38,6 @@ steps:
 
 images:
   - 'europe-north2-docker.pkg.dev/$PROJECT_ID/de-pipeline/fastapi-demo:${SHORT_SHA}'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

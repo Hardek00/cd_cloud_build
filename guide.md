@@ -35,6 +35,10 @@ Prereqs
   - Configuration: cloudbuild.yaml
   - Create
 
+Note on logs and service account
+- If you set a custom Trigger service account, builds may require a logs bucket.
+- This repo's `cloudbuild.yaml` sets `options.logging: CLOUD_LOGGING_ONLY` to avoid that requirement.
+
 5) First-time run (optional from UI)
 - In Triggers, click cloud-run-deploy → Run → choose latest commit
 - Watch Logs → ensure all steps succeed
