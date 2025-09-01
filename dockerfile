@@ -1,6 +1,10 @@
 FROM python:3.11-slim
 
+# .pyc (bytecode) cache off: Python compiles .py to .pyc in __pycache__/ to speed later runs.
+# Disabling keeps containers clean and avoids extra file writes.
 ENV PYTHONDONTWRITEBYTECODE=1
+# Unbuffered logs: stdout (normal output) and stderr (errors) are written immediately (flush),
+# so logs appear in Cloud Run/Build in real time.
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app

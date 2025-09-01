@@ -1,5 +1,21 @@
+# Cloud Build pipeline for FastAPI → Artifact Registry → Cloud Run
+#
+# Key choices you can tweak for demos:
+# - Region: europe-north2 (must be supported by both Artifact Registry and Cloud Run)
+# - Artifact Registry repo: de-pipeline (Docker format)
+# - Image name: fastapi-demo
+# - Tag: ${SHORT_SHA} (the short git commit SHA for traceability)
+#
+# Built-in substitutions used below:
+# - $PROJECT_ID   : the numeric/alphanumeric ID of the current GCP project
+# - ${SHORT_SHA}  : first 7 chars of the triggering commit SHA (e.g., abc1234)
+
 steps:
   - name: 'gcr.io/cloud-builders/docker'
+    # Step 1: Build the container image from ./dockerfile
+    # -f dockerfile: explicitly point at our Dockerfile (lowercase filename)
+    # -t europe-north2-docker.pkg.dev/$PROJECT_ID/de-pipeline/fastapi-demo:${SHORT_SHA}
+    #   Tags the local image with the Artifact Registry path (region-scoped host)
     args:
       [
         'build',
@@ -11,6 +27,7 @@ steps:
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
+    # Step 2: Push the image to Artifact Registry so Cloud Run can pull it
     args:
       [
         'push',
@@ -19,6 +36,8 @@ steps:
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
+    # Step 3: Deploy the image to Cloud Run (fully managed)
+    # --allow-unauthenticated is for public access for demo purposes
     args:
       [
         'run',
@@ -37,7 +56,10 @@ steps:
       ]
 
 images:
+  # Declares the image produced by this build (shows in Build results / history)
   - 'europe-north2-docker.pkg.dev/$PROJECT_ID/de-pipeline/fastapi-demo:${SHORT_SHA}'
 
 options:
+  # Use Cloud Logging only. Useful when the trigger runs under a custom
+  # service account so you don't have to configure a GCS logs bucket.
   logging: CLOUD_LOGGING_ONLY
