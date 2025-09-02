@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 import os
 
 app = FastAPI()
@@ -14,8 +14,8 @@ def read_root():
 
 
 @app.get("/healthz")
-def read_healthz():
-    return {"status": "ok"}
+def read_health():
+    return Response(status_code=200)
 
 
 if __name__ == "__main__":
