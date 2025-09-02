@@ -13,7 +13,7 @@ def read_root():
     }
 
 
-@app.get("/healthz")
+@app.get("/health")
 def read_health():
     return Response(status_code=200)
 
