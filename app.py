@@ -13,9 +13,9 @@ def read_root():
     }
 
 
-@app.get("/health")
+@app.get("/healthz", status_code=200)
 def read_health():
-    return Response(status_code=200)
+    return {"status": "ok"} 
 
 
 if __name__ == "__main__":
